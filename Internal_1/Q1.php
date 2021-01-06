@@ -45,6 +45,11 @@
                 }
                 echo "<h1>Number of Vowels: $vowel_count</h1>";
                 echo "<h1>Number of Consonant: $consonant_count</h1>";
+                echo "<h1>The occurance of 'a'/'A': ".preg_match_all("/[a]/i",$string); 
+                echo "<h1>The occurance of 'e'/'E': ".preg_match_all("/[e]/i",$string); 
+                echo "<h1>The occurance of 'i'/'I': ".preg_match_all("/[i]/i",$string); 
+                echo "<h1>The occurance of 'o'/'O': ".preg_match_all("/[o]/i",$string); 
+                echo "<h1>The occurance of 'u'/'U': ".preg_match_all("/[u]/i",$string); 
         }
     }
     ?>
