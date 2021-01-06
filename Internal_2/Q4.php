@@ -7,7 +7,7 @@
             $dept_id = $_POST['dept_id'];
             $dept_name = $_POST['dept_name_2'];
             
-            $dept_con = mysqli_connect('localhost','root','','emp_dept');
+            $dept_con = mysqli_connect('localhost','root','','emp_dept_q4');
             if(!$dept_con){
                 echo "Connection Error". mysqli_connect_error();
             }
@@ -26,18 +26,18 @@
 
     if(isset($_POST['submit_emp'])){
 
-        if(!empty($_POST['emp_id'] && $_POST['emp_name'] && $_POST['dept_name'] && $_POST['salary'])){
+        if(!empty($_POST['emp_id'] && $_POST['emp_name'] && $_POST['dept_name'] && $_POST['age'])){
             $emp_id = $_POST['emp_id'];
             $emp_name = $_POST['emp_name'];
             $dept_name = $_POST['dept_name'];
-            $salary = $_POST['salary'];
+            $age = $_POST['age'];
             
-            $emp_con = mysqli_connect('localhost','root','','emp_dept');
+            $emp_con = mysqli_connect('localhost','root','','emp_dept_q4');
             if(!$emp_con){
                 echo "Connection Error". mysqli_connect_error();
             }
 
-            $emp_insert_query = "INSERT INTO Employee(Emp_id,Emp_Name,Dept_Name,Salary) VALUES('$emp_id','$emp_name', '$dept_name', '$salary')";
+            $emp_insert_query = "INSERT INTO Employee(Emp_id,Emp_Name,Dept_Name,Age) VALUES('$emp_id','$emp_name', '$dept_name', '$age')";
 
             if(!mysqli_query($emp_con, $emp_insert_query)){
                 echo "Data could not be inserted". mysqli_error($emp_con);
@@ -55,7 +55,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Q3</title>
+    <title>Q4</title>
 </head>
 <body>
     <form method="POST">
@@ -90,8 +90,8 @@
                 <td><input type="text" name="dept_name"></td>
             </tr>
             <tr>
-                <td>Salary:</td>
-                <td><input type="text" name="salary"></td>
+                <td>Age:</td>
+                <td><input type="text" name="age"></td>
             </tr>
             <tr>
                 <td><input type="submit" name="submit_emp" value="Insert"></td>
@@ -103,70 +103,60 @@
 </html>
 
 <?php
-
-    //-------- Department Wise Emp Names ------------//
-
-    $emp_con = mysqli_connect('localhost','root','','emp_dept');
+    $emp_con = mysqli_connect('localhost','root','','emp_dept_q4');
     if(!$emp_con){
         echo "Connection Error". mysqli_connect_error();
     }
+    //------------------ Employees In More Than One Department ----------------------//
 
-    $dept_wise_names = "SELECT Emp_Name,Dept_Name,Salary FROM Employee ORDER BY Dept_Name";
+    $emp_duplicate = "SELECT Emp_Name FROM Employee GROUP BY Emp_Name HAVING COUNT(Emp_Name) > 1";
 
-    $emp_names_query = mysqli_query($emp_con, $dept_wise_names);
+    $duplicate_query = mysqli_query($emp_con, $emp_duplicate);
 
-    if(!$emp_names_query){
+    if(!$duplicate_query){
         echo "Wrong Query". mysqli_error($emp_con);
     }
 
-    $emp_name_list = mysqli_fetch_all($emp_names_query, MYSQLI_ASSOC);
+    $duplicate_emp_names = mysqli_fetch_all($duplicate_query, MYSQLI_ASSOC);
 
-    echo "<h1>Department Wise Employee Names:</h1>";
-    echo "<table border='1px solid black' width='200px'>";
-    
-    foreach($emp_name_list as $key=>$value){
-        echo "<tr><td>".$value["Emp_Name"]."</td><td>".$value["Dept_Name"]."</td></tr>";
+    echo "<h1>Employees In More Than One Department</h1>";
+
+    echo "<table border='1px solid black' width='100px' style='text-align:center;'>";
+    foreach($duplicate_emp_names as $key=>$value){
+        echo "<tr><td>".$value["Emp_Name"]."</td></tr>";
     }
     echo "</table>";
 
-    //--------------- Salary----------------//
+    //----------- Employee Names Starting With s or S -------------//
 
-    $total = 0;
-    $count =0;    
-    foreach($emp_name_list as $key=>$value){
-        $total += $value["Salary"];
-        $count++;
-    }
-    $avg_salary = $total /$count;
-    echo "<h1>Employees Having Salary Greater Than Average Salary:</h1>";
-    foreach($emp_name_list as $key=>$value){
-        if($value["Salary"] > $avg_salary){
-            echo "<h3>".$value["Emp_Name"]."</h3>"; 
-        }
-    }
+    $emp_names_from_s = "SELECT Emp_Name FROM Employee WHERE Emp_Name like 's%' or Emp_Name like 'S%'";
 
-    //------------ Deleting Department With Less Than 2 Employees --------------//
+    $names_list_from_s = mysqli_query($emp_con, $emp_names_from_s);
 
-    $delete_dept = "DELETE FROM Employee 
-                    WHERE Dept_Name 
-                    IN (SELECT Dept_Name 
-                        FROM Employee 
-                        GROUP BY Dept_Name 
-                        having COUNT(Emp_Name) < 2)";
-
-    $delete_dept_2 = "DELETE FROM Department 
-                      WHERE Dept_Name 
-                      NOT IN (SELECT Dept_Name 
-                              FROM Employee 
-                              GROUP BY Dept_Name)";
-
-    $delete_query = mysqli_query($emp_con, $delete_dept);
-    $delete_query_2 = mysqli_query($emp_con, $delete_dept_2);
-
-    if(!$delete_query){
+    if(!$names_list_from_s){
         echo "Wrong Query". mysqli_error($emp_con);
     }
-    if(!$delete_query_2){
+
+    $list = mysqli_fetch_all($names_list_from_s, MYSQLI_ASSOC);
+
+    echo "<h1>Employee Names Starting With 's' or 'S':</h1>";
+
+    foreach($list as $key=>$value){
+        echo $value["Emp_Name"]." ";
+    }
+
+    //---------Deleting if working for more than one dept ---------------//
+
+    $emp_delete = "DELETE FROM Employee 
+                   WHERE Emp_Name IN (
+                                  SELECT Emp_Name 
+                                  FROM Employee 
+                                  GROUP BY Emp_Name 
+                                  HAVING COUNT(Emp_Name) > 1)";
+
+    $delete_query_names = mysqli_query($emp_con, $emp_delete);
+
+    if(!$delete_query_names){
         echo "Wrong Query". mysqli_error($emp_con);
     }
 ?>
