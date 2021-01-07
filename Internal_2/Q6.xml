@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding= "UTF-8"?>
+<books>
+    <book id="1">
+        <author>John</author>
+        <price>500</price>
+        <ISBN>PR-123-A1</ISBN>
+        <category>Programming</category>
+    </book>
+    <book id="2">
+        <author>Jane davis</author>
+        <price>450</price>
+        <ISBN>PR-456-A2</ISBN>
+        <category>Programming</category>
+    </book>
+    <book id="3">
+        <author>Mark</author>
+        <price>300</price>
+        <ISBN>DB-123-ASD</ISBN>
+        <category>Database</category>
+    </book>
+    <book id="4">
+        <author>J.K.Rowling</author>
+        <price>650</price>
+        <ISBN>FC-123-456</ISBN>
+        <category>Novel</category>
+    </book>
+</books>

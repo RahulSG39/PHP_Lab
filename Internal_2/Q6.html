@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Q6</title>
+  </head>
+  <body>
+    <input type="submit" name="submit" id="submit" onclick="fetch_records()" />
+    <div id="disp"></div>
+
+    <script>
+      function fetch_records() {
+        var div = document.getElementById("disp");
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function () {
+          if (this.readyState == 4 && this.status == 200) {
+            div.innerHTML = this.responseText;
+          }
+        };
+        xmlhttp.open("GET", "Q6.php", true);
+        xmlhttp.send();
+      }
+    </script>
+  </body>
+</html>
