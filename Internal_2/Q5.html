@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Q5</title>
+  </head>
+  <body>
+    <form>
+      <input type="text" id="name" autocomplete="off" />
+      <div id="suggestion"></div>
+      <input type="submit" id="submit" onclick="name_suggestion()" />
+    </form>
+  </body>
+</html>
+
+<script type="text/javascript">
+  function name_suggestion() {
+    event.preventDefault();
+    var name = document.getElementById("name").value;
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function () {
+      if (this.readyState == 4 && this.status == 200) {
+        var text_names = xhttp.responseText;
+        text_names = text_names.split("\n");
+        var div = document.getElementById("suggestion");
+        if (name == "") {
+          div.innerHTML = "";
+        }
+        div.innerHTML = "";
+        for (var i = 0; i < text_names.length; i++) {
+          if (name.charAt(0) == text_names[i].charAt(0)) {
+            text_name = text_names[i].split(",");
+            div.innerHTML +=
+              "<h3>" + text_name[0] + " " + text_name[1] + "</h3>";
+          }
+        }
+      }
+      document.getElementById("name").value = "";
+    };
+    xhttp.open("GET", "names.txt", true);
+    xhttp.send();
+  }
+</script>
